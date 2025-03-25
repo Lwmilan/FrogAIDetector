@@ -58,6 +58,13 @@ app.post('/upload', upload.single('image'), (req, res) => {
   });
 });
 
+app.post('/chat', express.json(), (req, res) => {
+  console.log('Chat payload:', req.body);
+  // For now, return a dummy response.
+  res.json({ response: `This is a dummy answer about ${req.body.species}.` });
+});
+
+
 // Start the server on port 5000 (or the port defined in the environment variables)
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

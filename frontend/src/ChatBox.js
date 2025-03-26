@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
 
 const ChatBox = ({ species }) => {
   const [query, setQuery] = useState('');
@@ -7,19 +8,11 @@ const ChatBox = ({ species }) => {
   const sendMessage = async () => {
     if (!query.trim()) return;
     
-    // Append the user's message to the conversation
-    const updatedConversation = [
-      ...conversation,
-      { role: 'user', text: query }
-    ];
+    // Add user's message to conversation
+    const updatedConversation = [...conversation, { role: 'user', text: query }];
     setConversation(updatedConversation);
     
-    // Prepare the payload including the species and conversation history if needed
-    const payload = {
-      species,
-      query,
-      conversation: updatedConversation
-    };
+    const payload = { species, query, conversation: updatedConversation };
 
     try {
       const response = await fetch('http://localhost:5000/chat', {
@@ -33,7 +26,7 @@ const ChatBox = ({ species }) => {
       }
       const data = await response.json();
       
-      // Append the bot's response to the conversation
+      // Add bot's reply to conversation
       setConversation(prev => [
         ...prev,
         { role: 'bot', text: data.response }
@@ -45,32 +38,41 @@ const ChatBox = ({ species }) => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
 
   return (
-    <div style={{ marginTop: '2rem' }}>
-      <h3>Ask about the species: {species}</h3>
-      <div style={{ border: '1px solid #ccc', padding: '1rem', maxHeight: '300px', overflowY: 'auto' }}>
+    <Box sx={{ marginTop: 2 }}>
+      <Typography variant="h5" gutterBottom>
+        Chat about: {species}
+      </Typography>
+      <Paper sx={{ maxHeight: 300, overflowY: 'auto', padding: 2, marginBottom: 2 }}>
         {conversation.map((msg, index) => (
-          <div key={index} style={{ marginBottom: '0.5rem' }}>
-            <strong>{msg.role === 'user' ? 'You' : 'Bot'}:</strong> {msg.text}
-          </div>
+          <Box key={index} sx={{ marginBottom: 1 }}>
+            <Typography variant="subtitle2" color={msg.role === 'user' ? 'primary' : 'secondary'}>
+              {msg.role === 'user' ? 'You' : 'Bot'}:
+            </Typography>
+            <Typography variant="body1">{msg.text}</Typography>
+          </Box>
         ))}
-      </div>
-      <textarea
-        rows="3"
-        style={{ width: '100%', marginTop: '1rem' }}
+      </Paper>
+      <TextField
+        fullWidth
+        multiline
+        rows={3}
+        variant="outlined"
+        placeholder="Type your question..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyPress={handleKeyPress}
-        placeholder="Type your question here..."
       />
-      <button onClick={sendMessage} style={{ marginTop: '0.5rem' }}>Send</button>
-    </div>
+      <Button variant="contained" sx={{ marginTop: 1 }} onClick={sendMessage}>
+        Send
+      </Button>
+    </Box>
   );
 };
 

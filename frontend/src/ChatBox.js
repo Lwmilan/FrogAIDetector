@@ -6,13 +6,20 @@ const ChatBox = ({ species }) => {
   const [conversation, setConversation] = useState([]);
 
   const sendMessage = async () => {
-    if (!query.trim()) return;
-    
-    // Add user's message to conversation
-    const updatedConversation = [...conversation, { role: 'user', text: query }];
-    setConversation(updatedConversation);
-    
-    const payload = { species, query, conversation: updatedConversation };
+    const currentQuery = query;
+    if (!currentQuery.trim()) return;
+
+    // Append the user's message to the conversation and clear the input immediately
+    const userMessage = { role: 'user', text: currentQuery };
+    setConversation(prev => [...prev, userMessage]);
+    setQuery(''); // Clear the input field right away
+
+    // Create the payload with the current query (captured before clearing) and conversation history.
+    const payload = {
+      species,
+      query: currentQuery,
+      conversation: [...conversation, userMessage]
+    };
 
     try {
       const response = await fetch('/api/chat', {
@@ -26,12 +33,8 @@ const ChatBox = ({ species }) => {
       }
       const data = await response.json();
       
-      // Add bot's reply to conversation
-      setConversation(prev => [
-        ...prev,
-        { role: 'bot', text: data.response }
-      ]);
-      setQuery('');
+      // Append the bot's response to the conversation
+      setConversation(prev => [...prev, { role: 'bot', text: data.response }]);
     } catch (error) {
       console.error('Error in chat:', error);
     }
@@ -77,3 +80,4 @@ const ChatBox = ({ species }) => {
 };
 
 export default ChatBox;
+

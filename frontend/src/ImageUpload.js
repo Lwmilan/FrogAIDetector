@@ -30,7 +30,7 @@ const ImageUpload = () => {
     formData.append('image', image);
 
     try {
-      const response = await fetch('http://localhost:5000/upload', {
+      const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
@@ -51,7 +51,7 @@ const ImageUpload = () => {
       <Container maxWidth="sm">
         <Paper elevation={3} sx={{ padding: 3 }}>
           <Typography variant="h4" align="center" gutterBottom>
-            Upload a Plant Image
+            Upload a Frog Image
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Button variant="contained" component="label">

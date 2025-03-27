@@ -51,7 +51,7 @@ const ImageUpload = () => {
       <Container maxWidth="sm">
         <Paper elevation={3} sx={{ padding: 3 }}>
           <Typography variant="h4" align="center" gutterBottom>
-            Upload a Frog Image
+            Upload a Frog Image V1.4
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Button variant="contained" component="label">
